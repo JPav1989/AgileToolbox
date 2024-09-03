@@ -1,0 +1,131 @@
+﻿@page "/poker"
+@rendermode InteractiveWebAssembly
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<PageTitle>Planning Poker</PageTitle>
+
+<div class="form-group">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="basic-addon1">User</span>
+        </div>
+        <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" @bind="userInput">
+    </div>
+</div>
+
+<div class="form-group">
+    <button class="btn btn-card" @onclick="() => HandleSetValue(1)">
+        <div class="card-content">
+            <div class="card-top">♠ 1</div>
+            <div class="card-middle">1</div>
+            <div class="card-bottom">♠ 1</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card" @onclick="() => HandleSetValue(2)">
+        <div class="card-content">
+            <div class="card-top">♠ 2</div>
+            <div class="card-middle">2</div>
+            <div class="card-bottom">♠ 2</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card" @onclick="() => HandleSetValue(3)">
+        <div class="card-content">
+            <div class="card-top">♠ 3</div>
+            <div class="card-middle">3</div>
+            <div class="card-bottom">♠ 3</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card" @onclick="() => HandleSetValue(5)">
+        <div class="card-content">
+            <div class="card-top">♠ 5</div>
+            <div class="card-middle">5</div>
+            <div class="card-bottom">♠ 5</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card" @onclick="() => HandleSetValue(8)">
+        <div class="card-content">
+            <div class="card-top">♠ 8</div>
+            <div class="card-middle">8</div>
+            <div class="card-bottom">♠ 8</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card" @onclick="() => HandleSetValue(13)">
+        <div class="card-content">
+            <div class="card-top">♠ 13</div>
+            <div class="card-middle">13</div>
+            <div class="card-bottom">♠ 13</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card" @onclick="() => HandleSetValue(20)">
+        <div class="card-content">
+            <div class="card-top">♠ 20</div>
+            <div class="card-middle">20</div>
+            <div class="card-bottom">♠ 20</div>
+        </div>
+    </button>
+</div>
+<button class="btn btn-outline-secondary" @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var estimate in estimates)
+    {
+        <li>@estimate.Key - @estimate.Value</li>
+    }
+</ul>
+
+@code {
+    private HubConnection? hubConnection;
+    private Dictionary<string, string> estimates = new();
+    private string? userInput;
+    private string? estimateInput;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/PokerHub"))
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, estimate) =>
+        {
+
+            estimates.Add(user, estimate);
+            InvokeAsync(StateHasChanged);
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", userInput, estimateInput);
+        }
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    private void HandleSetValue(int value)
+    {
+        estimateInput = value.ToString();
+    }
+}
