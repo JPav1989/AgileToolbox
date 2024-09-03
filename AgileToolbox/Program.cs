@@ -39,6 +39,7 @@ app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     .AddAdditionalAssemblies(typeof(AgileToolbox.Client._Imports).Assembly);
 
+//For SignalR
 app.MapHub<PokerHub>("/PokerHub");
 
 app.Run();
