@@ -73,21 +73,27 @@
     </button>
 </div>
 <button class="btn btn-outline-secondary" @onclick="Send" disabled="@(!IsConnected)">Send</button>
+<button class="btn btn-outline-secondary" @onclick="ToggleShowResults" disabled="@(!IsConnected)">@showResultButton</button>
 
 <hr>
 
+@if (showResults)
+{
 <ul id="messagesList">
     @foreach (var estimate in estimates)
     {
         <li>@estimate.Key - @estimate.Value</li>
     }
 </ul>
+}
 
 @code {
     private HubConnection? hubConnection;
     private Dictionary<string, string> estimates = new();
     private string? userInput;
     private string? estimateInput;
+    private bool showResults = false;
+    private string? showResultButton = "Show";
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,6 +109,20 @@
         });
 
         await hubConnection.StartAsync();
+    }
+
+    private void ToggleShowResults()
+    {
+        if (showResults)
+        {
+            showResults = false;
+            showResultButton = "Show";
+        }
+        else
+        {
+            showResults = true;
+            showResultButton = "Hide";
+        }
     }
 
     private async Task Send()
