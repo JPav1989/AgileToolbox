@@ -72,8 +72,11 @@
         </div>
     </button>
 </div>
+<br />
 <button class="btn btn-outline-secondary" @onclick="Send" disabled="@(!IsConnected)">Send</button>
 <button class="btn btn-outline-secondary" @onclick="ToggleShowResults" disabled="@(!IsConnected)">@showResultButton</button>
+<button class="btn btn-outline-secondary" @onclick="ClearResults" disabled="@(!IsConnected)">Clear</button>
+<button class="btn btn-outline-secondary" @onclick="SyncResults" disabled="@(!IsConnected)">Sync To Me</button> 
 
 <hr>
 
@@ -84,7 +87,16 @@
     {
         <li>@estimate.Key - @estimate.Value</li>
     }
-</ul>
+    </ul>
+}
+else
+{
+    <ul id="messagesList">
+        @foreach (var estimate in estimates)
+        {
+            <li>@estimate.Key - ???</li>
+        }
+    </ul>
 }
 
 @code {
@@ -108,20 +120,63 @@
             InvokeAsync(StateHasChanged);
         });
 
+        hubConnection.On<bool>("ReceiveShowMessage", (showEstimates) =>
+        {
+            showResults = showEstimates;
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<Dictionary<string, string>>("ReceiveClearEstimates", (clearEstimates) =>
+        {
+            estimates = clearEstimates;
+            InvokeAsync(StateHasChanged);
+        });
+
+        hubConnection.On<Dictionary<string, string>>("ReceiveSyncEstimates", (syncEstimates) =>
+        {
+            estimates = syncEstimates;
+            InvokeAsync(StateHasChanged);
+        });
+
         await hubConnection.StartAsync();
     }
 
-    private void ToggleShowResults()
+    private async Task ToggleShowResults()
     {
-        if (showResults)
+        if (hubConnection is not null)
         {
-            showResults = false;
-            showResultButton = "Show";
+            if (showResults)
+            {
+                showResults = false;
+                showResultButton = "Show";
+            }
+            else
+            {
+                showResults = true;
+                showResultButton = "Hide";
+            }
+
+            await hubConnection.SendAsync("ToggleShow", showResults);
+            StateHasChanged();
+        }        
+    }
+
+    private async Task ClearResults()
+    {
+        if (hubConnection is not null)
+        {
+            estimates = new Dictionary<string, string>();
+            await hubConnection.SendAsync("ClearEstimates", estimates);
+            StateHasChanged();
         }
-        else
-        {
-            showResults = true;
-            showResultButton = "Hide";
+    }
+
+    private async Task SyncResults()
+    {
+        if (hubConnection is not null)
+        {            
+            await hubConnection.SendAsync("SyncEstimates", estimates);
+            StateHasChanged();
         }
     }
 
@@ -130,6 +185,7 @@
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("SendMessage", userInput, estimateInput);
+            StateHasChanged();
         }
     }
 
