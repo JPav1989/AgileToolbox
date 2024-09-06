@@ -105,7 +105,19 @@ else
     private string? userInput;
     private string? estimateInput;
     private bool showResults = false;
-    private string? showResultButton = "Show";
+    private string? showResultButton => GetShowButtonText();
+
+    private string GetShowButtonText()
+    {
+        if (showResults)
+        {
+            return "Hide";
+        }
+        else
+        {
+            return "Show";
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -148,12 +160,10 @@ else
             if (showResults)
             {
                 showResults = false;
-                showResultButton = "Show";
             }
             else
             {
                 showResults = true;
-                showResultButton = "Hide";
             }
 
             await hubConnection.SendAsync("ToggleShow", showResults);
@@ -167,6 +177,9 @@ else
         {
             estimates = new Dictionary<string, string>();
             await hubConnection.SendAsync("ClearEstimates", estimates);
+
+            showResults = false;
+            await hubConnection.SendAsync("ToggleShow", showResults);
             StateHasChanged();
         }
     }
