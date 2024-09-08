@@ -15,94 +15,142 @@
     </div>
 </div>
 
-<div class="form-group">
-    <button class="btn btn-card @(selectedCard == 1.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(1.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 1</div>
-            <div class="card-middle">1</div>
-            <div class="card-bottom">♠ 1</div>
-        </div>
-    </button>
+@if (poker)
+{
+    <div class="form-group">
+        <button class="btn btn-card @(selectedCard == 1.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(1.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 1</div>
+                <div class="card-middle">1</div>
+                <div class="card-bottom">♠ 1</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == 2.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(2.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 2</div>
-            <div class="card-middle">2</div>
-            <div class="card-bottom">♠ 2</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == 2.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(2.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 2</div>
+                <div class="card-middle">2</div>
+                <div class="card-bottom">♠ 2</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == 3.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(3.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 3</div>
-            <div class="card-middle">3</div>
-            <div class="card-bottom">♠ 3</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == 3.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(3.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 3</div>
+                <div class="card-middle">3</div>
+                <div class="card-bottom">♠ 3</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == 5.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(5.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 5</div>
-            <div class="card-middle">5</div>
-            <div class="card-bottom">♠ 5</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == 5.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(5.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 5</div>
+                <div class="card-middle">5</div>
+                <div class="card-bottom">♠ 5</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == 8.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(8.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 8</div>
-            <div class="card-middle">8</div>
-            <div class="card-bottom">♠ 8</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == 8.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(8.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 8</div>
+                <div class="card-middle">8</div>
+                <div class="card-bottom">♠ 8</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == 13.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(13.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 13</div>
-            <div class="card-middle">13</div>
-            <div class="card-bottom">♠ 13</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == 13.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(13.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 13</div>
+                <div class="card-middle">13</div>
+                <div class="card-bottom">♠ 13</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == 20.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(20.ToString())">
-        <div class="card-content">
-            <div class="card-top">♠ 20</div>
-            <div class="card-middle">20</div>
-            <div class="card-bottom">♠ 20</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == 20.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(20.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 20</div>
+                <div class="card-middle">20</div>
+                <div class="card-bottom">♠ 20</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == "Unknown" ? "selected" : "")" @onclick=@(() => HandleSetValue("Unknown"))>
-        <div class="card-content">
-            <div class="card-top">♠ ?</div>
-            <div class="card-middle">?</div>
-            <div class="card-bottom">♠ ?</div>
-        </div>
-    </button>
+        <button class="btn btn-card @(selectedCard == "Unknown" ? "selected" : "")" @onclick=@(() => HandleSetValue("Unknown"))>
+            <div class="card-content">
+                <div class="card-top">♠ ?</div>
+                <div class="card-middle">?</div>
+                <div class="card-bottom">♠ ?</div>
+            </div>
+        </button>
 
-    <button class="btn btn-card @(selectedCard == "Tea" ? "selected" : "")" @onclick=@(() => HandleSetValue("Tea"))>
-        <div class="card-content">
-            <div class="card-top">♠ T</div>
-            <div class="card-middle">T</div>
-            <div class="card-bottom">♠ T</div>
-        </div>
-    </button>
-</div>
+        <button class="btn btn-card @(selectedCard == "Tea" ? "selected" : "")" @onclick=@(() => HandleSetValue("Tea"))>
+            <div class="card-content">
+                <div class="card-top">♠ T</div>
+                <div class="card-middle">T</div>
+                <div class="card-bottom">♠ T</div>
+            </div>
+        </button>
+    </div>
+}
+else
+{
+    <div class="form-group">
+        <button class="btn btn-card @(selectedCard == 1.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(1.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 1</div>
+                <div class="card-middle">1</div>
+                <div class="card-bottom">♠ 1</div>
+            </div>
+        </button>
+
+        <button class="btn btn-card @(selectedCard == 2.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(2.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 2</div>
+                <div class="card-middle">2</div>
+                <div class="card-bottom">♠ 2</div>
+            </div>
+        </button>
+
+        <button class="btn btn-card @(selectedCard == 3.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(3.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 3</div>
+                <div class="card-middle">3</div>
+                <div class="card-bottom">♠ 3</div>
+            </div>
+        </button>
+
+        <button class="btn btn-card @(selectedCard == 4.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(4.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 4</div>
+                <div class="card-middle">4</div>
+                <div class="card-bottom">♠ 4</div>
+            </div>
+        </button>
+
+        <button class="btn btn-card @(selectedCard == 5.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(5.ToString())">
+            <div class="card-content">
+                <div class="card-top">♠ 5</div>
+                <div class="card-middle">5</div>
+                <div class="card-bottom">♠ 5</div>
+            </div>
+        </button>
+    </div>
+}
 <br />
 <button class="btn btn-outline-secondary" @onclick="Send" disabled="@(!IsConnected)">Send</button>
 <button class="btn btn-outline-secondary" @onclick="ToggleShowResults" disabled="@(!IsConnected)">@showResultButton</button>
 <button class="btn btn-outline-secondary" @onclick="ClearResults" disabled="@(!IsConnected)">Clear</button>
-<button class="btn btn-outline-secondary" @onclick="SyncResults" disabled="@(!IsConnected)">Sync To Me</button> 
+<button class="btn btn-outline-secondary" @onclick="SyncResults" disabled="@(!IsConnected)">Sync To Me</button>
+<button class="btn btn-outline-secondary" @onclick="ChangeVoteType" disabled="@(!IsConnected)">@voteTypeButton</button>
 
 <hr>
 
 @if (showResults)
 {
-<ul id="messagesList">
-    @foreach (var estimate in estimates)
-    {
-        <li>@estimate.Key - @estimate.Value</li>
-    }
+    <ul id="messagesList">
+        @foreach (var estimate in estimates)
+        {
+            <li>@estimate.Key - @estimate.Value</li>
+        }
     </ul>
 }
 else
@@ -122,7 +170,9 @@ else
     private string? estimateInput;
     private bool showResults = false;
     private string? showResultButton => GetShowButtonText();
-    private string selectedCard;
+    private string? selectedCard;
+    private bool poker = true;
+    private string? voteTypeButton => GetVoteTypeButtonText();
 
     private string GetShowButtonText()
     {
@@ -133,6 +183,18 @@ else
         else
         {
             return "Show";
+        }
+    }
+
+    private string GetVoteTypeButtonText()
+    {
+        if (poker)
+        {
+            return "Go To Confidence Vote";
+        }
+        else
+        {
+            return "Go To Planning Vote";
         }
     }
 
@@ -174,7 +236,31 @@ else
             InvokeAsync(StateHasChanged);
         });
 
+        hubConnection.On<bool>("ReceiveToggleVote", (pokerType) =>
+        {
+            poker = pokerType;
+            InvokeAsync(StateHasChanged);
+        });
+
         await hubConnection.StartAsync();
+    }
+
+    private async Task ChangeVoteType()
+    {
+        if (hubConnection is not null)
+        {
+            if (poker)
+            {
+                poker = false;
+            }
+            else
+            {
+                poker = true;
+            }
+
+            await hubConnection.SendAsync("ToggleVote", poker);
+            StateHasChanged();
+        }
     }
 
     private async Task ToggleShowResults()
@@ -192,7 +278,7 @@ else
 
             await hubConnection.SendAsync("ToggleShow", showResults);
             StateHasChanged();
-        }        
+        }
     }
 
     private async Task ClearResults()
@@ -211,7 +297,7 @@ else
     private async Task SyncResults()
     {
         if (hubConnection is not null)
-        {            
+        {
             await hubConnection.SendAsync("SyncEstimates", estimates);
             StateHasChanged();
         }

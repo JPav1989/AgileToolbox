@@ -23,4 +23,9 @@ public class PokerHub: Hub
     {
         await Clients.All.SendAsync("ReceiveSyncEstimates", estimates);
     }
+
+    public async Task ToggleVote(bool pokerType)
+    {
+        await Clients.All.SendAsync("ReceiveToggleVote", pokerType);
+    }    
 }
