@@ -18,41 +18,27 @@
 
 @if (poker)
 {
-    <div class="form-group">
-        <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected="() => HandleSetValue(1.ToString())" />
-
-        <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected="() => HandleSetValue(2.ToString())" />
-
-        <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected="() => HandleSetValue(3.ToString())" />
-
-        <Card CardValue="5" IsSelected="@(selectedCard == "5")" OnSelected="() => HandleSetValue(5.ToString())" />
-
-        <Card CardValue="8" IsSelected="@(selectedCard == "8")" OnSelected="() => HandleSetValue(8.ToString())" />
-
-        <Card CardValue="13" IsSelected="@(selectedCard == "13")" OnSelected="() => HandleSetValue(13.ToString())" />
-
-        <Card CardValue="20" IsSelected="@(selectedCard == "20")" OnSelected="() => HandleSetValue(20.ToString())" />
-
+    <div class="form-group">        
+        <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected=@(() => HandleSetValue("1")) />
+        <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected=@(() => HandleSetValue("2")) />
+        <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected=@(() => HandleSetValue("3")) />
+        <Card CardValue="5" IsSelected="@(selectedCard == "5")" OnSelected=@(() => HandleSetValue("5")) />
+        <Card CardValue="8" IsSelected="@(selectedCard == "8")" OnSelected=@(() => HandleSetValue("8")) />
+        <Card CardValue="13" IsSelected="@(selectedCard == "13")" OnSelected=@(() => HandleSetValue("13")) />
+        <Card CardValue="20" IsSelected="@(selectedCard == "20")" OnSelected=@(() => HandleSetValue("20")) />
         <Card CardValue="?" IsSelected="@(selectedCard == "?")" OnSelected=@(() => HandleSetValue("Unknown")) />
-
         <Card CardValue="Tea" IsSelected="@(selectedCard == "Tea")" OnSelected=@(() => HandleSetValue("Tea")) />
     </div>
 }
 else
 {
-    <div class="form-group">
-        <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected="() => HandleSetValue(1.ToString())" />
-
-        <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected="() => HandleSetValue(2.ToString())" />
-
-        <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected="() => HandleSetValue(3.ToString())" />
-
-        <Card CardValue="4" IsSelected="@(selectedCard == "4")" OnSelected="() => HandleSetValue(4.ToString())" />
-
-        <Card CardValue="5" IsSelected="@(selectedCard == "5")" OnSelected="() => HandleSetValue(5.ToString())" />
-
+    <div class="form-group">        
+        <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected=@(() => HandleSetValue("1")) />
+        <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected=@(() => HandleSetValue("2")) />
+        <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected=@(() => HandleSetValue("3")) />
+        <Card CardValue="4" IsSelected="@(selectedCard == "4")" OnSelected=@(() => HandleSetValue("4")) />
+        <Card CardValue="5" IsSelected="@(selectedCard == "5")" OnSelected=@(() => HandleSetValue("5")) />
         <Card CardValue="?" IsSelected="@(selectedCard == "?")" OnSelected=@(() => HandleSetValue("Unknown")) />
-
         <Card CardValue="Tea" IsSelected="@(selectedCard == "Tea")" OnSelected=@(() => HandleSetValue("Tea")) />
     </div>
 }
