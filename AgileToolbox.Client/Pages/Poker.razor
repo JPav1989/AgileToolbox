@@ -16,7 +16,7 @@
 </div>
 
 <div class="form-group">
-    <button class="btn btn-card" @onclick="() => HandleSetValue(1)">
+    <button class="btn btn-card @(selectedCard == 1.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(1.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 1</div>
             <div class="card-middle">1</div>
@@ -24,7 +24,7 @@
         </div>
     </button>
 
-    <button class="btn btn-card" @onclick="() => HandleSetValue(2)">
+    <button class="btn btn-card @(selectedCard == 2.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(2.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 2</div>
             <div class="card-middle">2</div>
@@ -32,7 +32,7 @@
         </div>
     </button>
 
-    <button class="btn btn-card" @onclick="() => HandleSetValue(3)">
+    <button class="btn btn-card @(selectedCard == 3.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(3.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 3</div>
             <div class="card-middle">3</div>
@@ -40,7 +40,7 @@
         </div>
     </button>
 
-    <button class="btn btn-card" @onclick="() => HandleSetValue(5)">
+    <button class="btn btn-card @(selectedCard == 5.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(5.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 5</div>
             <div class="card-middle">5</div>
@@ -48,7 +48,7 @@
         </div>
     </button>
 
-    <button class="btn btn-card" @onclick="() => HandleSetValue(8)">
+    <button class="btn btn-card @(selectedCard == 8.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(8.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 8</div>
             <div class="card-middle">8</div>
@@ -56,7 +56,7 @@
         </div>
     </button>
 
-    <button class="btn btn-card" @onclick="() => HandleSetValue(13)">
+    <button class="btn btn-card @(selectedCard == 13.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(13.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 13</div>
             <div class="card-middle">13</div>
@@ -64,11 +64,27 @@
         </div>
     </button>
 
-    <button class="btn btn-card" @onclick="() => HandleSetValue(20)">
+    <button class="btn btn-card @(selectedCard == 20.ToString() ? "selected" : "")" @onclick="() => HandleSetValue(20.ToString())">
         <div class="card-content">
             <div class="card-top">♠ 20</div>
             <div class="card-middle">20</div>
             <div class="card-bottom">♠ 20</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card @(selectedCard == "Unknown" ? "selected" : "")" @onclick=@(() => HandleSetValue("Unknown"))>
+        <div class="card-content">
+            <div class="card-top">♠ ?</div>
+            <div class="card-middle">?</div>
+            <div class="card-bottom">♠ ?</div>
+        </div>
+    </button>
+
+    <button class="btn btn-card @(selectedCard == "Tea" ? "selected" : "")" @onclick=@(() => HandleSetValue("Tea"))>
+        <div class="card-content">
+            <div class="card-top">♠ T</div>
+            <div class="card-middle">T</div>
+            <div class="card-bottom">♠ T</div>
         </div>
     </button>
 </div>
@@ -106,6 +122,7 @@ else
     private string? estimateInput;
     private bool showResults = false;
     private string? showResultButton => GetShowButtonText();
+    private string selectedCard;
 
     private string GetShowButtonText()
     {
@@ -127,8 +144,15 @@ else
 
         hubConnection.On<string, string>("ReceiveMessage", (user, estimate) =>
         {
+            if (estimates.ContainsKey(user))
+            {
+                estimates[user] = estimate;
+            }
+            else
+            {
+                estimates.Add(user, estimate);
+            }
 
-            estimates.Add(user, estimate);
             InvokeAsync(StateHasChanged);
         });
 
@@ -213,8 +237,10 @@ else
         }
     }
 
-    private void HandleSetValue(int value)
+    private void HandleSetValue(string value)
     {
+        selectedCard = value;
         estimateInput = value.ToString();
+        StateHasChanged();
     }
 }

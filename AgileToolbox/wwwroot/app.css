@@ -78,6 +78,14 @@ a, .btn-link {
     color: black;
 }
 
+/* New style for selected card */
+.btn-card.selected {
+    border: 3px solid #ff5722;
+    background-color: deepskyblue;
+    box-shadow: 0 8px 16px rgba(255, 87, 34, 0.6);
+    transform: scale(1.05);
+}
+
 /* Add a border to make it look like a card */
 .btn-card:focus, .btn-card:active {
     outline: none;
@@ -163,3 +171,12 @@ body {
         .nav-links a:hover {
             background-color: #adb5bd; /* Slightly lighter muted grey on hover */
         }
+
+
+
+
+
+
+
+
+
