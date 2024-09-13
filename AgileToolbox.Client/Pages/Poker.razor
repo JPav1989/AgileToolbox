@@ -18,7 +18,7 @@
 
 @if (poker)
 {
-    <div class="form-group card-row">        
+    <div class="form-group">        
         <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected=@(() => HandleSetValue("1")) />
         <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected=@(() => HandleSetValue("2")) />
         <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected=@(() => HandleSetValue("3")) />
@@ -32,7 +32,7 @@
 }
 else
 {
-    <div class="form-group card-row">
+    <div class="form-group">
         <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected=@(() => HandleSetValue("1")) />
         <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected=@(() => HandleSetValue("2")) />
         <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected=@(() => HandleSetValue("3")) />
