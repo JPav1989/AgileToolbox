@@ -27,7 +27,7 @@ body {
 
 /* Content Section */
 .content {
-    max-width:fit-content;
+    max-width: fit-content;
     margin: 20px auto;
     padding: 20px;
     background-color: white;
@@ -312,6 +312,37 @@ body {
         color: #f8f9fa; /* Muted white */
     }
 
+.dictionary-box {
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin: 10px 0;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.key-column {
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+.value-column {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
 .nav-links {
     list-style: none;
     display: flex;
@@ -330,12 +361,3 @@ body {
         .nav-links a:hover {
             background-color: #adb5bd; /* Slightly lighter muted grey on hover */
         }
-
-
-
-
-
-
-
-
-

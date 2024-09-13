@@ -1,0 +1,102 @@
+﻿@if (ShowResults)
+{
+    <div class="dictionary-box">
+        <table>
+            @foreach (var entry in InputResults)
+            {
+                <tr>
+                    <td class="key-column">@entry.Key</td>
+                    <td class="value-column">@entry.Value</td>
+                </tr>
+            }
+        </table>
+        @GetACurlyWurly()
+    </div>
+
+    <div class="dictionary-box">
+        <table>
+            <tr>
+                <td class="key-column">AverageResult</td>
+                <td class="value-column">@GetAverageResult()</td>
+            </tr>
+        </table>
+    </div>
+}
+else
+{
+    <div class="dictionary-box">
+        <table>
+            @foreach (var entry in InputResults)
+            {
+                <tr>
+                    <td class="key-column">@entry.Key</td>
+                    <td class="value-column">???</td>
+                </tr>
+            }
+        </table>        
+    </div>
+
+    <div class="dictionary-box">
+        <table>
+            <tr>
+                <td class="key-column">AverageResult</td>
+                <td class="value-column">???</td>
+            </tr>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Dictionary<string, string> InputResults { get; set; }
+
+    [Parameter]
+    public bool ShowResults { get; set; }
+
+    private List<int> GetIntegerEstimates()
+    {
+        List<int> integerValues = new();
+        foreach (var entry in InputResults)
+        {
+            int.TryParse(entry.Value, out int output);
+            integerValues.Add(output);
+        }
+        return integerValues;
+    }
+
+
+    private string GetAverageResult()
+    {
+
+        var integerValues = GetIntegerEstimates();
+        if (integerValues.Any())
+        {
+            return integerValues.Average().ToString();
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+
+    private string GetACurlyWurly()
+    {
+        var integerValues = GetIntegerEstimates();
+
+        if (integerValues.Count < 2)
+        {
+            return string.Empty;
+        }
+
+        bool allSame = integerValues.All(num => num == integerValues[0]);
+
+        if (allSame)
+        {
+            return "YOU GET A CURLY WURLY!";
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+}

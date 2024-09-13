@@ -51,24 +51,7 @@ else
 
 <hr>
 
-@if (showResults)
-{
-    <ul id="messagesList">
-        @foreach (var estimate in estimates)
-        {
-            <li>@estimate.Key - @estimate.Value</li>
-        }
-    </ul>
-}
-else
-{
-    <ul id="messagesList">
-        @foreach (var estimate in estimates)
-        {
-            <li>@estimate.Key - ???</li>
-        }
-    </ul>
-}
+<Results InputResults="@estimates" ShowResults="@showResults" />
 
 @code {
     private HubConnection? hubConnection;
