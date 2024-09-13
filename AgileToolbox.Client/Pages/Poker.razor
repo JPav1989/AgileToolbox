@@ -165,6 +165,8 @@ else
                 poker = true;
             }
 
+            await ClearResults();
+
             await hubConnection.SendAsync("ToggleVote", poker);
             StateHasChanged();
         }
