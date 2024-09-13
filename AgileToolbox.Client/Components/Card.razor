@@ -1,0 +1,23 @@
+﻿<button class="btn btn-card @(IsSelected ? "selected" : "")" @onclick="OnCardClick">
+    <div class="card-content">
+        <div class="card-top">♠ @CardValue</div>
+        <div class="card-middle">@CardValue</div>
+        <div class="card-bottom">♠ @CardValue</div>
+    </div>
+</button>
+
+@code {
+    [Parameter]
+    public string? CardValue { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSelected { get; set; }
+
+    [Parameter]
+    public bool IsSelected { get; set; }
+
+    private async Task OnCardClick()
+    {
+        await OnSelected.InvokeAsync(CardValue);
+    }
+}
