@@ -1,54 +1,77 @@
 ﻿@if (ShowResults)
 {
-    <div class="dictionary-box">
-        <table>
-            @foreach (var entry in InputResults)
-            {
-                <tr>
-                    <td class="key-column">@entry.Key</td>
-                    <td class="value-column">@entry.Value</td>
-                </tr>
-            }
-        </table>
-        @GetACurlyWurly()
-    </div>
+    <Blazorise.Table Striped>
+        <Blazorise.TableHeader>
+            <Blazorise.TableRow>
+                <Blazorise.TableHeaderCell>User</Blazorise.TableHeaderCell>
+                <Blazorise.TableHeaderCell>Estimate</Blazorise.TableHeaderCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableHeader>
+        <Blazorise.TableBody>
 
-    <div class="dictionary-box">
-        <table>
-            <tr>
-                <td class="key-column">AverageResult</td>
-                <td class="value-column">@GetAverageResult()</td>
-            </tr>
-        </table>
-    </div>
+            @foreach (var entry in InputResults!)
+            {
+                <Blazorise.TableRow>
+                    <Blazorise.TableRowCell>@entry.Key</Blazorise.TableRowCell>
+                    <Blazorise.TableRowCell>@entry.Value</Blazorise.TableRowCell>
+                </Blazorise.TableRow>
+            }
+
+        </Blazorise.TableBody>
+    </Blazorise.Table>
+
+    <Blazorise.Table Striped>
+        <Blazorise.TableHeader>
+            <Blazorise.TableRow>
+                <Blazorise.TableHeaderCell>Average Score</Blazorise.TableHeaderCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableHeader>
+        <Blazorise.TableBody>
+            <Blazorise.TableRow>
+                <Blazorise.TableRowCell>@GetAverageResult()</Blazorise.TableRowCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableBody>
+    </Blazorise.Table>    
 }
 else
 {
-    <div class="dictionary-box">
-        <table>
+    <Blazorise.Table Striped>
+        <Blazorise.TableHeader>
+            <Blazorise.TableRow>
+                <Blazorise.TableHeaderCell>User</Blazorise.TableHeaderCell>
+                <Blazorise.TableHeaderCell>Estimate</Blazorise.TableHeaderCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableHeader>
+        <Blazorise.TableBody>
+
             @foreach (var entry in InputResults)
             {
-                <tr>
-                    <td class="key-column">@entry.Key</td>
-                    <td class="value-column">???</td>
-                </tr>
+                <Blazorise.TableRow>
+                    <Blazorise.TableRowCell>@entry.Key</Blazorise.TableRowCell>
+                    <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
+                </Blazorise.TableRow>
             }
-        </table>        
-    </div>
 
-    <div class="dictionary-box">
-        <table>
-            <tr>
-                <td class="key-column">AverageResult</td>
-                <td class="value-column">???</td>
-            </tr>
-        </table>
-    </div>
+        </Blazorise.TableBody>
+    </Blazorise.Table>
+
+    <Blazorise.Table Striped>
+        <Blazorise.TableHeader>
+            <Blazorise.TableRow>
+                <Blazorise.TableHeaderCell>Average Score</Blazorise.TableHeaderCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableHeader>
+        <Blazorise.TableBody>
+            <Blazorise.TableRow>
+                <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableBody>
+    </Blazorise.Table>
 }
 
 @code {
     [Parameter]
-    public Dictionary<string, string> InputResults { get; set; }
+    public Dictionary<string, string>? InputResults { get; set; }
 
     [Parameter]
     public bool ShowResults { get; set; }
@@ -56,7 +79,7 @@ else
     private List<int> GetIntegerEstimates()
     {
         List<int> integerValues = new();
-        foreach (var entry in InputResults)
+        foreach (var entry in InputResults!)
         {
             int.TryParse(entry.Value, out int output);
             integerValues.Add(output);

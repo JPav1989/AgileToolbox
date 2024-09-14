@@ -1,6 +1,7 @@
 ﻿@page "/poker"
 @rendermode InteractiveWebAssembly
 @using AgileToolbox.Client.Components
+@using AgileToolbox.Client.Models
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager Navigation
 @implements IAsyncDisposable
@@ -8,26 +9,10 @@
 <PageTitle>Planning Poker</PageTitle>
 
 @if (roomEntered != true){
-    <div class="form-group">
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">User</span>
-            </div>
-            <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" @bind="userInput">
-        </div>
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text" id="basic-addon1">Room Name</span>
-            </div>
-            <input type="text" class="form-control" placeholder="RoomName" aria-label="RoomName" aria-describedby="basic-addon1" @bind="roomName">
-        </div>
-    </div>
-
-    <button class="btn btn-outline-secondary" @onclick="EnterRoom" disabled="@(!IsConnected)">Enter Room</button>
+    <RoomEntry OnEnterRoom="@((user) => EnterRoom(user))" />
 }
 else{
-@if (poker)
+@if (!confidenceVote)
 {
     <div class="form-group">        
         <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected=@(() => HandleSetValue("1")) />
@@ -54,11 +39,13 @@ else
     </div>
 }
 <br />
-<button class="btn btn-outline-secondary" @onclick="Send" disabled="@(!IsConnected)">Send</button>
-<button class="btn btn-outline-secondary" @onclick="ToggleShowResults" disabled="@(!IsConnected)">@showResultButton</button>
-<button class="btn btn-outline-secondary" @onclick="ClearResults" disabled="@(!IsConnected)">Clear</button>
-<button class="btn btn-outline-secondary" @onclick="SyncResults" disabled="@(!IsConnected)">Sync To Me</button>
-<button class="btn btn-outline-secondary" @onclick="ChangeVoteType" disabled="@(!IsConnected)">@voteTypeButton</button>
+
+    <Blazorise.Button Color="Blazorise.Color.Warning" Clicked="ToggleShowResults" Disabled="@(!IsConnected)">@showResultButton</Blazorise.Button>
+    <Blazorise.Button Color="Blazorise.Color.Danger" Clicked="ClearResults" Disabled="@(!IsConnected)">Clear</Blazorise.Button>
+    <Blazorise.Button Color="Blazorise.Color.Dark" Clicked="SyncResults" Disabled="@(!IsConnected)">Sync To Me</Blazorise.Button>
+    <br />
+    <br />
+    <Blazorise.Switch TValue="bool" Checked="@confidenceVote" Color="Blazorise.Color.Info" CheckedChanged="ChangeVoteType">Confidence Vote</Blazorise.Switch>
 
 <hr>
 
@@ -72,7 +59,7 @@ else
     private bool showResults = false;
     private string? showResultButton => GetShowButtonText();
     private string? selectedCard;
-    private bool poker = true;
+    private bool confidenceVote = false;
     private string? voteTypeButton => GetVoteTypeButtonText();
     private string? roomName;
     private bool roomEntered = false;
@@ -93,7 +80,7 @@ else
 
     private string GetVoteTypeButtonText()
     {
-        if (poker)
+        if (confidenceVote)
         {
             return "Go To Confidence Vote";
         }
@@ -149,29 +136,22 @@ else
 
         hubConnection.On<bool>("ReceiveToggleVote", (pokerType) =>
         {
-            poker = pokerType;
+            confidenceVote = pokerType;
             InvokeAsync(StateHasChanged);
         });
 
         await hubConnection.StartAsync();
     }
 
-    private async Task ChangeVoteType()
+    private async Task ChangeVoteType(bool value)
     {
         if (hubConnection is not null)
         {
-            if (poker)
-            {
-                poker = false;
-            }
-            else
-            {
-                poker = true;
-            }
+            confidenceVote = value;
 
             await ClearResults();
 
-            await hubConnection.SendAsync("ToggleVote", roomName, poker);
+            await hubConnection.SendAsync("ToggleVote", roomName, confidenceVote);
             StateHasChanged();
         }
     }
@@ -216,10 +196,12 @@ else
         }
     }
 
-    private async Task EnterRoom()
+    private async Task EnterRoom(User userDetails)
     {
         if (hubConnection is not null)
         {
+            userInput = userDetails.UserName;
+            roomName = userDetails.RoomName;
             roomEntered = true;
             await hubConnection.SendAsync("JoinRoom", roomName);
             StateHasChanged();
@@ -246,10 +228,11 @@ else
         }
     }
 
-    private void HandleSetValue(string value)
+    private async Task HandleSetValue(string value)
     {
         selectedCard = value;
         estimateInput = value.ToString();
+        await Send();
         StateHasChanged();
     }
 }
