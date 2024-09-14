@@ -192,6 +192,7 @@ else
         if (hubConnection is not null)
         {
             await hubConnection.SendAsync("SyncEstimates", roomName, estimates);
+            await hubConnection.SendAsync("ToggleShow", roomName, showResults);
             StateHasChanged();
         }
     }

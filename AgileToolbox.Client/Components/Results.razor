@@ -28,10 +28,16 @@
         </Blazorise.TableHeader>
         <Blazorise.TableBody>
             <Blazorise.TableRow>
-                <Blazorise.TableRowCell>@GetAverageResult()</Blazorise.TableRowCell>
+                <Blazorise.TableRowCell>
+                    @GetAverageResult()
+                    @if (HasNonCommittedEstimates)
+                    {
+                        <Blazorise.Badge Color="Blazorise.Color.Info" Pill>Some people were unsure or want a beverage</Blazorise.Badge>
+                    }
+                </Blazorise.TableRowCell>
             </Blazorise.TableRow>
         </Blazorise.TableBody>
-    </Blazorise.Table>    
+    </Blazorise.Table>
 }
 else
 {
@@ -76,50 +82,34 @@ else
     [Parameter]
     public bool ShowResults { get; set; }
 
+    private bool HasNonCommittedEstimates = false;
+
     private List<int> GetIntegerEstimates()
     {
         List<int> integerValues = new();
         foreach (var entry in InputResults!)
         {
             int.TryParse(entry.Value, out int output);
-            integerValues.Add(output);
+            if (output > 0)
+            {
+                integerValues.Add(output);
+            }
         }
         return integerValues;
     }
-
 
     private string GetAverageResult()
     {
 
         var integerValues = GetIntegerEstimates();
+        HasNonCommittedEstimates = integerValues.Count != InputResults!.Count;
         if (integerValues.Any())
-        {
-            return integerValues.Average().ToString();
+        {           
+            return $"{integerValues.Average().ToString()} ";
         }
         else
         {
-            return string.Empty;
-        }
-    }
-
-    private string GetACurlyWurly()
-    {
-        var integerValues = GetIntegerEstimates();
-
-        if (integerValues.Count < 2)
-        {
-            return string.Empty;
-        }
-
-        bool allSame = integerValues.All(num => num == integerValues[0]);
-
-        if (allSame)
-        {
-            return "YOU GET A CURLY WURLY!";
-        }
-        else
-        {
-            return string.Empty;
+            return "N/A ";
         }
     }
 }
