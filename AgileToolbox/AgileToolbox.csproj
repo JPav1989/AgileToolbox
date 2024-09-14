@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AgileToolbox.Client\AgileToolbox.Client.csproj" />
+    <PackageReference Include="Blazorise.Bootstrap5" Version="1.6.1" />
+    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.6.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
   </ItemGroup>
 
@@ -15,6 +17,10 @@
     <Content Update="wwwroot\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

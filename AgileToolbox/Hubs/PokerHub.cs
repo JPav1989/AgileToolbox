@@ -4,28 +4,40 @@ namespace AgileToolbox.Hubs;
 
 public class PokerHub: Hub
 {
-    public async Task SendMessage(string user, string estimate)
+    public async Task JoinRoom(string roomName)
     {
-        await Clients.All.SendAsync("ReceiveMessage", user, estimate);
+        await Groups.AddToGroupAsync(Context.ConnectionId, roomName);
+        await Clients.Group(roomName).SendAsync("ReceiveJoinRoom", $"{Context.ConnectionId} has entered the room - {roomName}");
     }
 
-    public async Task ToggleShow(bool showEstimates)
+    public async Task LeaveRoom(string roomName)
     {
-        await Clients.All.SendAsync("ReceiveShowMessage", showEstimates);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, roomName);
+        await Clients.Group(roomName).SendAsync("ReceiveLeaveRoom", $"{Context.ConnectionId} has left the room - {roomName}");
     }
 
-    public async Task ClearEstimates(Dictionary<string, string> estimates)
+    public async Task SendMessage(string roomName, string user, string estimate)
     {
-        await Clients.All.SendAsync("ReceiveClearEstimates", estimates);
+        await Clients.Group(roomName).SendAsync("ReceiveMessage", user, estimate);
     }
 
-    public async Task SyncEstimates(Dictionary<string, string> estimates)
+    public async Task ToggleShow(string roomName, bool showEstimates)
     {
-        await Clients.All.SendAsync("ReceiveSyncEstimates", estimates);
+        await Clients.Group(roomName).SendAsync("ReceiveShowMessage", showEstimates);
     }
 
-    public async Task ToggleVote(bool pokerType)
+    public async Task ClearEstimates(string roomName, Dictionary<string, string> estimates)
     {
-        await Clients.All.SendAsync("ReceiveToggleVote", pokerType);
+        await Clients.Group(roomName).SendAsync("ReceiveClearEstimates", estimates);
+    }
+
+    public async Task SyncEstimates(string roomName, Dictionary<string, string> estimates)
+    {
+        await Clients.Group(roomName).SendAsync("ReceiveSyncEstimates", estimates);
+    }
+
+    public async Task ToggleVote(string roomName, bool pokerType)
+    {
+        await Clients.Group(roomName).SendAsync("ReceiveToggleVote", pokerType);
     }    
 }
