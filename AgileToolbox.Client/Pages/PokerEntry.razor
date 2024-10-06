@@ -1,0 +1,48 @@
+﻿@page "/poker"
+@rendermode InteractiveWebAssembly
+@using AgileToolbox.Client.Components
+@using AgileToolbox.Client.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+
+<PageTitle>Planning Poker</PageTitle>
+
+<RoomEntry OnEnterRoom="@((roomDetails) => EnterRoomDetails(roomDetails))" />
+
+<Blazorise.Modal @ref="modalRef">
+    <Blazorise.ModalContent Centered>
+        <Blazorise.ModalHeader>
+            <Blazorise.ModalTitle>Details for the team</Blazorise.ModalTitle>
+            <Blazorise.CloseButton />
+        </Blazorise.ModalHeader>
+        <Blazorise.ModalBody>
+            <CopyToClipboard TextToCopy="@url" />           
+        </Blazorise.ModalBody>
+        <Blazorise.ModalFooter>
+            <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@NavigateToRoom">Go To Room</Blazorise.Button>
+        </Blazorise.ModalFooter>
+    </Blazorise.ModalContent>
+</Blazorise.Modal>
+
+@code {
+    private Blazorise.Modal? modalRef;
+    private string? url { get; set; }
+    private string? roomName { get; set; }
+
+    private Task ShowModal()
+    {
+        return modalRef!.Show();
+    }
+
+    private void NavigateToRoom()
+    {
+        Navigation.NavigateTo(url!);
+    }
+
+    private void EnterRoomDetails(string roomDetails)
+    {        
+        url = $"{Navigation.BaseUri}poker/{roomDetails}";
+        roomName = roomDetails;
+        ShowModal();
+    }
+}

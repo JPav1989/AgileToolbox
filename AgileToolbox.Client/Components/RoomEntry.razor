@@ -1,36 +1,15 @@
 ﻿@using AgileToolbox.Client.Models
 @using Blazorise
-<Blazorise.Fields>
-    <Blazorise.Field>
-        <Blazorise.FieldLabel>User</Blazorise.FieldLabel>
-        <FieldBody>
-            <TextEdit @bind-Text="userInput" />
-        </FieldBody>
-    </Blazorise.Field>
-    <Blazorise.Field>
-        <Blazorise.FieldLabel>Room Name</Blazorise.FieldLabel>
-        <FieldBody>
-            <TextEdit @bind-Text="roomName" />
-        </FieldBody>
-    </Blazorise.Field>
-</Blazorise.Fields>
 
-<Blazorise.Button Color="Blazorise.Color.Primary" Clicked="EnterRoom">Enter Room</Blazorise.Button>
+
+<Blazorise.Button Color="Blazorise.Color.Primary" Clicked="CreateRoom">Create Room</Blazorise.Button>
+
 @code {
     [Parameter]
-    public EventCallback<User> OnEnterRoom { get; set; }
+    public EventCallback<string> OnEnterRoom { get; set; }
 
-    private string? userInput;
-    private string? roomName;
-
-    private async Task EnterRoom()
-    {
-        User user = new()
-            {
-                UserName = userInput,
-                RoomName = roomName
-            };
-        await OnEnterRoom.InvokeAsync(user);
+    private async Task CreateRoom()
+    {        
+        await OnEnterRoom.InvokeAsync(Guid.NewGuid().ToString());
     }
-
 }

@@ -1,4 +1,4 @@
-﻿@page "/poker"
+﻿@page "/poker/{RoomName}"
 @rendermode InteractiveWebAssembly
 @using AgileToolbox.Client.Components
 @using AgileToolbox.Client.Models
@@ -8,13 +8,9 @@
 
 <PageTitle>Planning Poker</PageTitle>
 
-@if (roomEntered != true){
-    <RoomEntry OnEnterRoom="@((user) => EnterRoom(user))" />
-}
-else{
 @if (!confidenceVote)
 {
-    <div class="form-group">        
+    <div class="form-group">
         <Card CardValue="1" IsSelected="@(selectedCard == "1")" OnSelected=@(() => HandleSetValue("1")) />
         <Card CardValue="2" IsSelected="@(selectedCard == "2")" OnSelected=@(() => HandleSetValue("2")) />
         <Card CardValue="3" IsSelected="@(selectedCard == "3")" OnSelected=@(() => HandleSetValue("3")) />
@@ -23,7 +19,7 @@ else{
         <Card CardValue="13" IsSelected="@(selectedCard == "13")" OnSelected=@(() => HandleSetValue("13")) />
         <Card CardValue="20" IsSelected="@(selectedCard == "20")" OnSelected=@(() => HandleSetValue("20")) />
         <Card CardValue="?" IsSelected="@(selectedCard == "Unknown")" OnSelected=@(() => HandleSetValue("Unknown")) />
-        <Card CardValue="Tea" IsSelected="@(selectedCard == "Tea")" OnSelected=@(() => HandleSetValue("Tea")) />
+        <Card CardValue="🫖" IsSelected="@(selectedCard == "Tea")" OnSelected=@(() => HandleSetValue("Tea")) />
     </div>
 }
 else
@@ -35,23 +31,45 @@ else
         <Card CardValue="4" IsSelected="@(selectedCard == "4")" OnSelected=@(() => HandleSetValue("4")) />
         <Card CardValue="5" IsSelected="@(selectedCard == "5")" OnSelected=@(() => HandleSetValue("5")) />
         <Card CardValue="?" IsSelected="@(selectedCard == "?")" OnSelected=@(() => HandleSetValue("Unknown")) />
-        <Card CardValue="Tea" IsSelected="@(selectedCard == "Tea")" OnSelected=@(() => HandleSetValue("Tea")) />
+        <Card CardValue="🫖" IsSelected="@(selectedCard == "Tea")" OnSelected=@(() => HandleSetValue("Tea")) />
     </div>
 }
 <br />
 
-    <Blazorise.Button Color="Blazorise.Color.Warning" Clicked="ToggleShowResults" Disabled="@(!IsConnected)">@showResultButton</Blazorise.Button>
-    <Blazorise.Button Color="Blazorise.Color.Danger" Clicked="ClearResults" Disabled="@(!IsConnected)">Clear</Blazorise.Button>
-    <Blazorise.Button Color="Blazorise.Color.Dark" Clicked="SyncResults" Disabled="@(!IsConnected)">Sync To Me</Blazorise.Button>
-    <br />
-    <br />
-    <Blazorise.Switch TValue="bool" Checked="@confidenceVote" Color="Blazorise.Color.Info" CheckedChanged="ChangeVoteType">Confidence Vote</Blazorise.Switch>
+<Blazorise.Button Color="Blazorise.Color.Warning" Clicked="ToggleShowResults" Disabled="@(!IsConnected)">@showResultButton</Blazorise.Button>
+<Blazorise.Button Color="Blazorise.Color.Danger" Clicked="ClearResults" Disabled="@(!IsConnected)">Clear</Blazorise.Button>
+<Blazorise.Button Color="Blazorise.Color.Dark" Clicked="SyncResults" Disabled="@(!IsConnected)">Sync To Me</Blazorise.Button>
+<br />
+<br />
+<Blazorise.Switch TValue="bool" Checked="@confidenceVote" Color="Blazorise.Color.Info" CheckedChanged="ChangeVoteType">Confidence Vote</Blazorise.Switch>
 
 <hr>
 
 <Results InputResults="@estimates" ShowResults="@showResults" />
-}
+
+<Blazorise.Modal @bind-Visible="@isModalVisible">
+    <Blazorise.ModalContent Centered>
+        <Blazorise.ModalHeader>
+            <Blazorise.ModalTitle>Please enter your username</Blazorise.ModalTitle>
+            <Blazorise.CloseButton />
+        </Blazorise.ModalHeader>
+        <Blazorise.ModalBody>
+            <Blazorise.Field>
+                <Blazorise.FieldLabel>Name</Blazorise.FieldLabel>
+                <Blazorise.TextEdit @bind-Text="@userInput" Placeholder="Enter name..." />
+            </Blazorise.Field>
+        </Blazorise.ModalBody>
+        <Blazorise.ModalFooter>
+            <Blazorise.Button Color="Blazorise.Color.Primary" Clicked="@SetUserName">Enter Name</Blazorise.Button>
+        </Blazorise.ModalFooter>
+    </Blazorise.ModalContent>
+</Blazorise.Modal>
+
+
 @code {
+    [Parameter]
+    public string? RoomName { get; set; }
+
     private HubConnection? hubConnection;
     private Dictionary<string, string> estimates = new();
     private string? userInput;
@@ -60,11 +78,27 @@ else
     private string? showResultButton => GetShowButtonText();
     private string? selectedCard;
     private bool confidenceVote = false;
+    private bool isModalVisible;
     private string? voteTypeButton => GetVoteTypeButtonText();
-    private string? roomName;
-    private bool roomEntered = false;
     private List<string> roomMessages = new();
 
+    private Task ShowModal()
+    {
+        isModalVisible = true;
+        return Task.CompletedTask;
+    }
+
+    private async Task SetUserName()
+    {
+        isModalVisible = false;
+        await SetupHubConnections();
+
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("JoinRoom", RoomName);
+            StateHasChanged();
+        }
+    }
 
     private string GetShowButtonText()
     {
@@ -92,9 +126,96 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        isModalVisible = true;
+    }
+
+    private async Task ChangeVoteType(bool value)
+    {
+        if (hubConnection is not null)
+        {
+            confidenceVote = value;
+
+            await ClearResults();
+
+            await hubConnection.SendAsync("ToggleVote", RoomName, confidenceVote);
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleShowResults()
+    {
+        if (hubConnection is not null)
+        {
+            if (showResults)
+            {
+                showResults = false;
+            }
+            else
+            {
+                showResults = true;
+            }
+
+            await hubConnection.SendAsync("ToggleShow", RoomName, showResults);
+            StateHasChanged();
+        }
+    }
+
+    private async Task ClearResults()
+    {
+        if (hubConnection is not null)
+        {
+            estimates = new Dictionary<string, string>();
+            await hubConnection.SendAsync("ClearEstimates", RoomName, estimates);
+
+            showResults = false;
+            await hubConnection.SendAsync("ToggleShow", RoomName, showResults);
+            StateHasChanged();
+        }
+    }
+
+    private async Task SyncResults()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SyncEstimates", RoomName, estimates);
+            await hubConnection.SendAsync("ToggleShow", RoomName, showResults);
+            StateHasChanged();
+        }
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("SendMessage", RoomName, userInput, estimateInput);
+            StateHasChanged();
+        }
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    private async Task HandleSetValue(string value)
+    {
+        selectedCard = value;
+        estimateInput = value.ToString();
+        await Send();
+        StateHasChanged();
+    }
+
+    private async Task SetupHubConnections()
+    {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(Navigation.ToAbsoluteUri("/PokerHub"))
-            .Build();
+                .WithUrl(Navigation.ToAbsoluteUri("/PokerHub"))
+                .Build();
 
         hubConnection.On<string>("ReceiveJoinRoom", (roomMessage) =>
         {
@@ -141,99 +262,6 @@ else
         });
 
         await hubConnection.StartAsync();
-    }
 
-    private async Task ChangeVoteType(bool value)
-    {
-        if (hubConnection is not null)
-        {
-            confidenceVote = value;
-
-            await ClearResults();
-
-            await hubConnection.SendAsync("ToggleVote", roomName, confidenceVote);
-            StateHasChanged();
-        }
-    }
-
-    private async Task ToggleShowResults()
-    {
-        if (hubConnection is not null)
-        {
-            if (showResults)
-            {
-                showResults = false;
-            }
-            else
-            {
-                showResults = true;
-            }
-
-            await hubConnection.SendAsync("ToggleShow", roomName, showResults);
-            StateHasChanged();
-        }
-    }
-
-    private async Task ClearResults()
-    {
-        if (hubConnection is not null)
-        {
-            estimates = new Dictionary<string, string>();
-            await hubConnection.SendAsync("ClearEstimates", roomName, estimates);
-
-            showResults = false;
-            await hubConnection.SendAsync("ToggleShow", roomName, showResults);
-            StateHasChanged();
-        }
-    }
-
-    private async Task SyncResults()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("SyncEstimates", roomName, estimates);
-            await hubConnection.SendAsync("ToggleShow", roomName, showResults);
-            StateHasChanged();
-        }
-    }
-
-    private async Task EnterRoom(User userDetails)
-    {
-        if (hubConnection is not null)
-        {
-            userInput = userDetails.UserName;
-            roomName = userDetails.RoomName;
-            roomEntered = true;
-            await hubConnection.SendAsync("JoinRoom", roomName);
-            StateHasChanged();
-        }
-    }
-
-    private async Task Send()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("SendMessage", roomName, userInput, estimateInput);
-            StateHasChanged();
-        }
-    }
-
-    public bool IsConnected =>
-        hubConnection?.State == HubConnectionState.Connected;
-
-    public async ValueTask DisposeAsync()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
-    }
-
-    private async Task HandleSetValue(string value)
-    {
-        selectedCard = value;
-        estimateInput = value.ToString();
-        await Send();
-        StateHasChanged();
     }
 }
