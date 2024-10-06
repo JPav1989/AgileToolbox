@@ -153,29 +153,38 @@ else
 
         var integerValues = GetIntegerEstimates();
 
-        var averageEstimate = integerValues.Average();
-
-
-        // Find the closest Fibonacci number
-        int closest = FibonacciSequence[0];
-        foreach (int fib in FibonacciSequence)
+        if (integerValues.Any())
         {
-            if (Math.Abs(fib - averageEstimate) < Math.Abs(closest - averageEstimate))
-            {
-                closest = fib;
-            }
-        }
 
-        // Check if the next Fibonacci number is closer
-        if (FibonacciSequence.Count > 1)
+            var averageEstimate = integerValues.Average();
+
+
+            // Find the closest Fibonacci number
+            int closest = FibonacciSequence[0];
+            foreach (int fib in FibonacciSequence)
+            {
+                if (Math.Abs(fib - averageEstimate) < Math.Abs(closest - averageEstimate))
+                {
+                    closest = fib;
+                }
+            }
+
+            // Check if the next Fibonacci number is closer
+            if (FibonacciSequence.Count > 1)
+            {
+                int lastFib = FibonacciSequence[^1];
+                if (Math.Abs(lastFib - averageEstimate) < Math.Abs(closest - averageEstimate))
+                {
+                    closest = lastFib;
+                }
+            }
+
+            return closest.ToString();
+        }
+        else
         {
-            int lastFib = FibonacciSequence[^1];
-            if (Math.Abs(lastFib - averageEstimate) < Math.Abs(closest - averageEstimate))
-            {
-                closest = lastFib;
-            }
+            return "N/A";
         }
-
-        return closest.ToString();
     }
-        }
+}
+        
