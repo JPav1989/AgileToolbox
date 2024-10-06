@@ -55,8 +55,13 @@ else
         </Blazorise.ModalHeader>
         <Blazorise.ModalBody>
             <Blazorise.Field>
-                <Blazorise.FieldLabel>Name</Blazorise.FieldLabel>
-                <Blazorise.TextEdit @bind-Text="@userInput" Placeholder="Enter name..." />
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">User</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Please enter your name..." aria-label="Username" aria-describedby="basic-addon1" @bind="@userInput">
+                </div>
+
             </Blazorise.Field>
         </Blazorise.ModalBody>
         <Blazorise.ModalFooter>
@@ -82,9 +87,12 @@ else
     private string? voteTypeButton => GetVoteTypeButtonText();
     private List<string> roomMessages = new();
 
+    private Blazorise.TextEdit inputRef;
+
     private Task ShowModal()
     {
         isModalVisible = true;
+        StateHasChanged();
         return Task.CompletedTask;
     }
 
