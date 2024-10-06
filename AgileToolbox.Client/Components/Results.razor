@@ -1,78 +1,109 @@
 ﻿@if (ShowResults)
 {
-    <Blazorise.Table Striped>
-        <Blazorise.TableHeader>
-            <Blazorise.TableRow>
-                <Blazorise.TableHeaderCell>User</Blazorise.TableHeaderCell>
-                <Blazorise.TableHeaderCell>Estimate</Blazorise.TableHeaderCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableHeader>
-        <Blazorise.TableBody>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <Blazorise.Table Striped>
+                    <Blazorise.TableHeader>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableHeaderCell>User</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Estimate</Blazorise.TableHeaderCell>
+                        </Blazorise.TableRow>
+                    </Blazorise.TableHeader>
+                    <Blazorise.TableBody>
 
-            @foreach (var entry in InputResults!)
-            {
-                <Blazorise.TableRow>
-                    <Blazorise.TableRowCell>@entry.Key</Blazorise.TableRowCell>
-                    <Blazorise.TableRowCell>@entry.Value</Blazorise.TableRowCell>
-                </Blazorise.TableRow>
-            }
+                        @foreach (var entry in InputResults!)
+                        {
+                            <Blazorise.TableRow>
+                                <Blazorise.TableRowCell>@entry.Key</Blazorise.TableRowCell>
+                                <Blazorise.TableRowCell>@entry.Value</Blazorise.TableRowCell>
+                            </Blazorise.TableRow>
+                        }
 
-        </Blazorise.TableBody>
-    </Blazorise.Table>
-
-    <Blazorise.Table Striped>
-        <Blazorise.TableHeader>
-            <Blazorise.TableRow>
-                <Blazorise.TableHeaderCell>Average Score</Blazorise.TableHeaderCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableHeader>
-        <Blazorise.TableBody>
-            <Blazorise.TableRow>
-                <Blazorise.TableRowCell>
-                    @GetAverageResult()
-                    @if (HasNonCommittedEstimates)
-                    {
-                        <Blazorise.Badge Color="Blazorise.Color.Info" Pill>Some people were unsure or want a beverage</Blazorise.Badge>
-                    }
-                </Blazorise.TableRowCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableBody>
-    </Blazorise.Table>
+                    </Blazorise.TableBody>
+                </Blazorise.Table>
+            </div>
+            <div class="col-md-6">
+                <Blazorise.Table Striped>
+                    <Blazorise.TableHeader>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableHeaderCell>Average Score</Blazorise.TableHeaderCell>
+                            @if (!ConfidenceVote)
+                            {
+                                <Blazorise.TableHeaderCell>Recommended Fibonacci Score</Blazorise.TableHeaderCell>
+                            }
+                        </Blazorise.TableRow>
+                    </Blazorise.TableHeader>
+                    <Blazorise.TableBody>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableRowCell>
+                                @GetAverageResult()
+                                @if (HasNonCommittedEstimates)
+                                {
+                                    <Blazorise.Badge Color="Blazorise.Color.Info" Pill>Some people were unsure or want a beverage</Blazorise.Badge>
+                                }
+                            </Blazorise.TableRowCell>
+                            @if (!ConfidenceVote)
+                            {
+                                <Blazorise.TableRowCell>@GetFibonacciScore() </Blazorise.TableRowCell>
+                            }
+                        </Blazorise.TableRow>
+                    </Blazorise.TableBody>
+                </Blazorise.Table>
+            </div>
+        </div>
+    </div>
 }
 else
 {
-    <Blazorise.Table Striped>
-        <Blazorise.TableHeader>
-            <Blazorise.TableRow>
-                <Blazorise.TableHeaderCell>User</Blazorise.TableHeaderCell>
-                <Blazorise.TableHeaderCell>Estimate</Blazorise.TableHeaderCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableHeader>
-        <Blazorise.TableBody>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-6">
+                <Blazorise.Table Striped>
+                    <Blazorise.TableHeader>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableHeaderCell>User</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Estimate</Blazorise.TableHeaderCell>
+                        </Blazorise.TableRow>
+                    </Blazorise.TableHeader>
+                    <Blazorise.TableBody>
 
-            @foreach (var entry in InputResults)
-            {
-                <Blazorise.TableRow>
-                    <Blazorise.TableRowCell>@entry.Key</Blazorise.TableRowCell>
-                    <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
-                </Blazorise.TableRow>
-            }
+                        @foreach (var entry in InputResults)
+                        {
+                            <Blazorise.TableRow>
+                                <Blazorise.TableRowCell>@entry.Key</Blazorise.TableRowCell>
+                                <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
+                            </Blazorise.TableRow>
+                        }
 
-        </Blazorise.TableBody>
-    </Blazorise.Table>
+                    </Blazorise.TableBody>
+                </Blazorise.Table>
+            </div>
 
-    <Blazorise.Table Striped>
-        <Blazorise.TableHeader>
-            <Blazorise.TableRow>
-                <Blazorise.TableHeaderCell>Average Score</Blazorise.TableHeaderCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableHeader>
-        <Blazorise.TableBody>
-            <Blazorise.TableRow>
-                <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableBody>
-    </Blazorise.Table>
+            <div class="col-md-6">
+                <Blazorise.Table Striped>
+                    <Blazorise.TableHeader>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableHeaderCell>Average Score</Blazorise.TableHeaderCell>
+                            @if (!ConfidenceVote)
+                            {
+                                <Blazorise.TableHeaderCell>Recommended Fibonacci Score</Blazorise.TableHeaderCell>
+                            }
+                        </Blazorise.TableRow>
+                    </Blazorise.TableHeader>
+                    <Blazorise.TableBody>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
+                            @if (!ConfidenceVote)
+                            {
+                                <Blazorise.TableRowCell>???</Blazorise.TableRowCell>
+                            }
+                        </Blazorise.TableRow>
+                    </Blazorise.TableBody>
+                </Blazorise.Table>
+            </div>
+        </div>
+    </div>
 }
 
 @code {
@@ -81,6 +112,9 @@ else
 
     [Parameter]
     public bool ShowResults { get; set; }
+
+    [Parameter]
+    public bool ConfidenceVote { get; set; }
 
     private bool HasNonCommittedEstimates = false;
 
@@ -104,7 +138,7 @@ else
         var integerValues = GetIntegerEstimates();
         HasNonCommittedEstimates = integerValues.Count != InputResults!.Count;
         if (integerValues.Any())
-        {           
+        {
             return $"{integerValues.Average().ToString()} ";
         }
         else
@@ -112,4 +146,36 @@ else
             return "N/A ";
         }
     }
-}
+
+    private string GetFibonacciScore()
+    {
+        List<int> FibonacciSequence = new() { 0, 1, 2, 3, 5, 8, 13, 20 };
+
+        var integerValues = GetIntegerEstimates();
+
+        var averageEstimate = integerValues.Average();
+
+
+        // Find the closest Fibonacci number
+        int closest = FibonacciSequence[0];
+        foreach (int fib in FibonacciSequence)
+        {
+            if (Math.Abs(fib - averageEstimate) < Math.Abs(closest - averageEstimate))
+            {
+                closest = fib;
+            }
+        }
+
+        // Check if the next Fibonacci number is closer
+        if (FibonacciSequence.Count > 1)
+        {
+            int lastFib = FibonacciSequence[^1];
+            if (Math.Abs(lastFib - averageEstimate) < Math.Abs(closest - averageEstimate))
+            {
+                closest = lastFib;
+            }
+        }
+
+        return closest.ToString();
+    }
+        }
